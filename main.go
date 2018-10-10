@@ -40,13 +40,14 @@ func process_image(blob []byte, basename string) {
 	mw.NormalizeImage()
 	mw.BlurImage(0, 0.5)
 	mw.LevelImage(0.6*qr, 0.1, 0.91*qr)
+	mw.TrimImage(10)
 
 	mw.WriteImage(basename + ".png")
 	fmt.Println("Finished!")
 }
 
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	indexTemplate.Execute(w, IP.String())
+	indexTemplate.Execute(w, templateValues{IP.String(), PORT})
 }
 
 func Upload(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -77,6 +78,11 @@ var indexTemplate *template.Template
 var PORT string
 var IP net.IP
 
+type templateValues struct {
+	IP string
+	Port string
+}
+
 func init() {
 	indexTemplate, _ = template.ParseFiles("index.html")
 	PORT = ":8080"
@@ -91,8 +97,8 @@ func main() {
 	router.GET("/", Index)
 	router.POST("/upload", Upload)
 
-	//	blob, _ := ioutil.ReadFile("before.png")
-	//	process_image(blob)
+//	blob, _ := ioutil.ReadFile("before.png")
+//	process_image(blob, "after")
 
 	fmt.Printf("Server starting at http://%v%v\n\n", IP, PORT)
 	log.Fatal(http.ListenAndServe(PORT, router))

@@ -34,7 +34,11 @@
   </div>
 
 <p> Tap the camera to take a picture and upload it! </p>
-<p>Served from {{.}} </p>
+<img id='barcode'
+      src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://{{.IP}}{{.Port}}"
+      alt="http://{{.IP}}{{.Port}}"
+       />
+
 
 <script type="application/javascript"> 
   let input_capture = document.getElementById('inputcapture')
