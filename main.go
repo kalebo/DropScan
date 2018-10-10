@@ -23,7 +23,7 @@ func process_image(blob []byte, basename string) {
 
 	c := mw.GetImageHeight()
 	r := mw.GetImageWidth()
-	nr, nc := (r*15)/100, (c*15)/100
+	nr, nc := (r*30)/100, (c*30)/100
 	//mw.WriteImage("before.png")
 
 	// TODO: only resize for images larger than a threshold
@@ -40,7 +40,7 @@ func process_image(blob []byte, basename string) {
 	mw.NormalizeImage()
 	mw.BlurImage(0, 0.5)
 	mw.LevelImage(0.6*qr, 0.1, 0.91*qr)
-	mw.TrimImage(10)
+	mw.TrimImage(60)
 
 	mw.WriteImage(basename + ".png")
 	fmt.Println("Finished!")
