@@ -7,12 +7,13 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 	"gopkg.in/gographics/imagick.v2/imagick"
 )
 
-func process_image(blob []byte) {
+func process_image(blob []byte, basename string) {
 	const qr float64 = float64(65535) // quantum range max
 
 	mw := imagick.NewMagickWand()
@@ -25,6 +26,7 @@ func process_image(blob []byte) {
 	nr, nc := (r*15)/100, (c*15)/100
 	//mw.WriteImage("before.png")
 
+	// TODO: only resize for images larger than a threshold
 	fmt.Printf("Resizing from %vx%v to %vx%v ...\n", r, c, nr, nc)
 	mw.ResizeImage(nr, nc, imagick.FILTER_LANCZOS2, 1)
 
@@ -39,7 +41,7 @@ func process_image(blob []byte) {
 	mw.BlurImage(0, 0.5)
 	mw.LevelImage(0.6*qr, 0.1, 0.91*qr)
 
-	mw.WriteImage("after.png")
+	mw.WriteImage(basename + ".png")
 	fmt.Println("Finished!")
 }
 
@@ -53,7 +55,9 @@ func Upload(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	if err != nil {
 		log.Fatal("Malformated payload")
 	}
-	process_image(body)
+	t := time.Now()
+	// TODO: reduce potenial for name collsions by allowing users to provide basename
+	process_image(body, "img_" + t.Format("20060102150405"))
 }
 
 // Borrowed from from SO user Mr. Wang from Next Door
@@ -90,7 +94,7 @@ func main() {
 	//	blob, _ := ioutil.ReadFile("before.png")
 	//	process_image(blob)
 
-	fmt.Printf("Server starting at %v%v\n\n", IP, PORT)
+	fmt.Printf("Server starting at http://%v%v\n\n", IP, PORT)
 	log.Fatal(http.ListenAndServe(PORT, router))
 
 }
