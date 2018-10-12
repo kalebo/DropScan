@@ -13,6 +13,8 @@ import (
 	"gopkg.in/gographics/imagick.v2/imagick"
 )
 
+//go:generate go-bindata index.html
+
 func process_image(blob []byte, basename string) {
 	const qr float64 = float64(65535) // quantum range max
 
@@ -84,7 +86,8 @@ type templateValues struct {
 }
 
 func init() {
-	indexTemplate, _ = template.ParseFiles("index.html")
+    indexhtml, _ := Asset("index.html")
+	indexTemplate, _ = template.New("index").Parse(string(indexhtml))
 	PORT = ":8080"
 	IP = GetOutboundIP()
 }
