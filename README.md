@@ -7,19 +7,33 @@ with my phone's camera and then cleaning them up so I can insert those images in
 It is structured as a simple web app that does the image processing on the
 server side.
 
-## Build Requirements
-To build this project you will need to `get` the following go libraries:
+## Building 
+
+To build this project you will need the following 
+
+### 1. Install the ImageMagick MagickWand library
+This can be installed in debian derivatives as follows:
+
+``` sh
+sudo apt install libmagickwand-dev
+```
+
+### 2. Go`get` the following go libraries and binaries:
 
 ```sh
 go get "github.com/julienschmidt/httprouter"
 go get "gopkg.in/gographics/imagick.v2/imagick"
 ```
 
-You will also need the ImageMagick MagickWand library. This can be installed in debian
-derivatives as follows:
+And to install the go-bindata utilitity:
+```sh
+go get -u github.com/go-bindata/go-bindata/...
+```
+### 3. Generate assets and build
 
-``` sh
-sudo apt install libmagickwand-dev
+```sh
+go generate
+go build
 ```
 
 
